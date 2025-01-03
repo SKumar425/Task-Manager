@@ -1,6 +1,60 @@
-import "./App.css";
+import { useEffect, useState } from "react";
+import {
+  signInWithPopup,
+  GoogleAuthProvider,
+  // signOut,
+  onAuthStateChanged,
+} from "firebase/auth";
+import { auth } from "./firebase/firebaseConfig";
 
-function App() {
+const Home = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userData, setUserData] = useState({});
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (result) => {
+      if (result) {
+        const { displayName, email } = result;
+        setUserData({ displayName, email });
+
+        setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const SignUpUsingGoogle = () => {
+    const provider = new GoogleAuthProvider();
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        const { displayName, email } = result.user;
+        setUserData({ displayName, email });
+
+        setIsLoggedIn(true);
+      })
+      .catch((error) => {
+        console.log({ error });
+      });
+  };
+
+  // const Logout = () => {
+  //   signOut(auth)
+  //     .then(() => {
+  //       // Sign-out successful.
+  //       setUserData({});
+  //       setIsLoggedIn(false);
+  //     })
+  //     .catch((error) => {
+  //       // An error happened.
+  //       console.log({ error });
+  //     });
+  // };
+
+  console.log(isLoggedIn, userData);
+
   return (
     <>
       <div className="hidden xl:block">
@@ -29,7 +83,10 @@ function App() {
               Streamline your workflow and track progress effortlessly with our
               all-in-one task management app.
             </div>
-            <button className="w-[364px] h-[60px] bg-[#292929] rounded-[18px] text-[21px] font-[700] leading-[30px] text-[#FFFFFF] flex justify-center items-center gap-2 mt-5">
+            <button
+              onClick={SignUpUsingGoogle}
+              className="w-[364px] h-[60px] bg-[#292929] rounded-[18px] text-[21px] font-[700] leading-[30px] text-[#FFFFFF] flex justify-center items-center gap-2 mt-5"
+            >
               <svg
                 width="22"
                 height="22"
@@ -111,7 +168,10 @@ function App() {
               Streamline your workflow and track progress effortlessly with our
               all-in-one task management app.
             </div>
-            <button className="w-[300px] h-[60px] bg-[#292929] rounded-[16px] text-[21px] font-[700] leading-[30px] text-[#FFFFFF] flex justify-center items-center gap-2 mt-5">
+            <button
+              onClick={SignUpUsingGoogle}
+              className="w-[300px] h-[60px] bg-[#292929] rounded-[16px] text-[21px] font-[700] leading-[30px] text-[#FFFFFF] flex justify-center items-center gap-2 mt-5"
+            >
               <svg
                 width="22"
                 height="22"
@@ -179,6 +239,6 @@ function App() {
       </div>
     </>
   );
-}
+};
 
-export default App;
+export default Home;
