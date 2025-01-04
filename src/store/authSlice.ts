@@ -1,9 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-// Define the initial state
+// Define the initial state interface
+interface UserData {
+  name?: string;
+  email?: string;
+  photo?: string;
+}
+
 interface AuthState {
   isLoggedIn: boolean;
-  userData: object;
+  userData: UserData;
 }
 
 // Initial state values
@@ -23,7 +29,7 @@ const authSlice = createSlice({
     setIsLoggedIn(state, action: PayloadAction<boolean>) {
       state.isLoggedIn = action.payload;
     },
-    setUserData(state, action: PayloadAction<object>) {
+    setUserData(state, action: PayloadAction<UserData>) {
       state.userData = action.payload;
       localStorage.setItem('userData', JSON.stringify(action.payload)); // Save user data to localStorage
     },

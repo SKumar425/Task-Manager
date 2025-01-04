@@ -37,8 +37,10 @@ const Home = () => {
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider)
       .then((result) => {
-        const { displayName, email } = result.user;
-        dispatch(setUserData({ name: displayName, email: email }));
+        const { displayName, email,photoURL } = result.user;
+        dispatch(
+          setUserData({ name: displayName, email: email, photo: photoURL })
+        );
         dispatch(setIsLoggedIn(true));
         navigate("/tasklist");
       })
@@ -46,19 +48,6 @@ const Home = () => {
         console.log({ error });
       });
   };
-
-  // const Logout = () => {
-  //   signOut(auth)
-  //     .then(() => {
-  //       // Sign-out successful.
-  //       setUserData({});
-  //       setIsLoggedIn(false);
-  //     })
-  //     .catch((error) => {
-  //       // An error happened.
-  //       console.log({ error });
-  //     });
-  // };
 
   console.log(isLoggedIn, userData);
 
