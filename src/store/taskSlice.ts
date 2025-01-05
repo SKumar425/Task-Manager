@@ -1,30 +1,31 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // Define the task structure
 interface Task {
   [x: string]: string;
   id: string;
   title: string;
-  
-  category: 'work' | 'personal' | 'other';
+
+  category: "work" | "personal";
   tags?: string[];
   dueDate?: string; // ISO format
-  isCompleted: boolean;
+  status: "todo" | "in-progress" | "complete";
+  isCompleted:boolean
 }
 
 // Define the initial state interface
 interface TasksState {
   tasks: Task[];
-  sortDirection: 'asc' | 'desc';
+  sortDirection: "asc" | "desc";
 }
 
 // Load tasks from localStorage
 const loadTasksFromLocalStorage = (): Task[] => {
   try {
-    const tasks = localStorage.getItem('tasks');
+    const tasks = localStorage.getItem("tasks");
     return tasks ? JSON.parse(tasks) : [];
   } catch (error) {
-    console.error('Failed to load tasks from localStorage:', error);
+    console.error("Failed to load tasks from localStorage:", error);
     return [];
   }
 };
@@ -32,21 +33,21 @@ const loadTasksFromLocalStorage = (): Task[] => {
 // Save tasks to localStorage
 const saveTasksToLocalStorage = (tasks: Task[]) => {
   try {
-    localStorage.setItem('tasks', JSON.stringify(tasks));
+    localStorage.setItem("tasks", JSON.stringify(tasks));
   } catch (error) {
-    console.error('Failed to save tasks to localStorage:', error);
+    console.error("Failed to save tasks to localStorage:", error);
   }
 };
 
 // Initial state
 const initialState: TasksState = {
   tasks: loadTasksFromLocalStorage(),
-  sortDirection: 'asc',
+  sortDirection: "asc",
 };
 
 // Create a slice for tasks
 const taskSlice = createSlice({
-  name: 'tasks',
+  name: "tasks",
   initialState,
   reducers: {
     addTask(state, action: PayloadAction<Task>) {
@@ -54,7 +55,9 @@ const taskSlice = createSlice({
       saveTasksToLocalStorage(state.tasks);
     },
     editTask(state, action: PayloadAction<Task>) {
-      const index = state.tasks.findIndex((task) => task.id === action.payload.id);
+      const index = state.tasks.findIndex(
+        (task) => task.id === action.payload.id
+      );
       if (index !== -1) {
         state.tasks[index] = action.payload;
         saveTasksToLocalStorage(state.tasks);
@@ -71,19 +74,25 @@ const taskSlice = createSlice({
         saveTasksToLocalStorage(state.tasks);
       }
     },
-    setSortDirection(state, action: PayloadAction<'asc' | 'desc'>) {
+    setSortDirection(state, action: PayloadAction<"asc" | "desc">) {
       state.sortDirection = action.payload;
     },
     sortTasks(state) {
       state.tasks.sort((a, b) =>
-        state.sortDirection === 'asc'
-          ? new Date(a.dueDate || '').getTime() - new Date(b.dueDate || '').getTime()
-          : new Date(b.dueDate || '').getTime() - new Date(a.dueDate || '').getTime()
+        state.sortDirection === "asc"
+          ? new Date(a.dueDate || "").getTime() -
+            new Date(b.dueDate || "").getTime()
+          : new Date(b.dueDate || "").getTime() -
+            new Date(a.dueDate || "").getTime()
       );
     },
     performBatchActions(
       state,
-      action: PayloadAction<{ taskIds: string[]; markComplete?: boolean; delete?: boolean }>
+      action: PayloadAction<{
+        taskIds: string[];
+        markComplete?: boolean;
+        delete?: boolean;
+      }>
     ) {
       const { taskIds, markComplete, delete: deleteTasks } = action.payload;
 
@@ -101,7 +110,10 @@ const taskSlice = createSlice({
 
       saveTasksToLocalStorage(state.tasks);
     },
-    rearrangeTasks(state, action: PayloadAction<{ sourceIndex: number; destinationIndex: number }>) {
+    rearrangeTasks(
+      state,
+      action: PayloadAction<{ sourceIndex: number; destinationIndex: number }>
+    ) {
       const { sourceIndex, destinationIndex } = action.payload;
       const [movedTask] = state.tasks.splice(sourceIndex, 1);
       state.tasks.splice(destinationIndex, 0, movedTask);

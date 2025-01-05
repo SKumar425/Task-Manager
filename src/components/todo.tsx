@@ -21,16 +21,23 @@ const Todo: React.FC = () => {
     }
 
     const newTask = {
-      id: nanoid(), // Generate unique ID for the task
+      id: nanoid(),
       title: taskName,
       dueDate,
       category,
-      isCompleted: status === "complete",
+      status,
     };
 
     dispatch(addTask(newTask));
 
     // Reset form fields after adding the task
+    setTaskName("");
+    setDueDate("");
+    setStatus("default");
+    setCategory("default");
+  };
+
+  const handleCancel = () => {
     setTaskName("");
     setDueDate("");
     setStatus("default");
@@ -47,7 +54,7 @@ const Todo: React.FC = () => {
 
   return (
     <div className="w-full flex flex-col rounded-md bg-[#0000001A]">
-      <div className="w-full bg-[#FAC3FF] rounded-t-md text-[#000000] text-[16px] font-[600] leading-[22px] p-3">
+      <div className="w-full bg-[#FAC3FF] rounded-t-md text-[#000000] text-[16px] font-[600] leading-[22px] py-3 px-4">
         Todo
       </div>
       <div className="w-full flex flex-col">
@@ -101,69 +108,78 @@ const Todo: React.FC = () => {
                   Select Category
                 </option>
                 <option value="personal">Personal</option>
-                <option value="office">Office</option>
+                <option value="work">Work</option>
               </select>
             </div>
           </div>
 
-          <button
-            onClick={handleAddTask}
-            className="mt-4 p-2 bg-blue-500 text-white rounded-md"
-          >
-            Add Task
-          </button>
+          <div className="w-full flex gap-5">
+            <button
+              onClick={handleAddTask}
+              className="w-full p-2 bg-[#7B1984] text-white rounded-full"
+            >
+              ADD TASK
+            </button>
+            <button
+              onClick={handleCancel}
+              className="w-full p-2 bg-blue-500 text-white rounded-full"
+            >
+              CANCEL
+            </button>
+          </div>
         </div>
 
-        <div className="w-full flex flex-col gap-4">
+        <div className="w-full flex flex-col gap-4 p-4">
           <table className="w-full text-left">
             <tbody>
-              {tasks.length > 0 ? (
-                tasks.map((task) => (
-                  <tr key={task.id}>
-                    <td className="p-2">{task.title}</td>
-                    <td className="p-2">
-                      {task.dueDate ? task.dueDate : "No Due Date"}
-                    </td>
-                    <td className="p-2">
-                      {task.isCompleted
-                        ? "Complete"
-                        : task.status === "in-progress"
-                        ? "In Progress"
-                        : "To Do"}
-                    </td>
-                    <td className="p-2">{task.category}</td>
-                    <td className="p-2 relative">
-                      {" "}
-                      <button
-                        className="text-gray-500 hover:text-gray-700"
-                        onClick={() => handleMenuToggle(task.id)}
-                      >
-                        ...
-                      </button>
-                      {menuTaskId === task.id && (
-                        <div className="absolute right-0 top-full mt-1 w-32 bg-white border border-gray-300 rounded-md shadow-md">
-                          <button
-                            className="block w-full text-left p-2 hover:bg-gray-100"
-                            onClick={() => {
-                              setMenuTaskId(null);
-                            }}
-                          >
-                            Edit
-                          </button>
-                          <button
-                            className="block w-full text-left p-2 text-red-600 hover:bg-gray-100"
-                            onClick={() => {
-                              handleDeleteTask(task.id);
-                              setMenuTaskId(null);
-                            }}
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      )}
-                    </td>
-                  </tr>
-                ))
+              {tasks.filter((task) => task.status === "todo").length > 0 ? (
+                tasks
+                  .filter((task) => task.status === "todo")
+                  .map((task) => (
+                    <tr
+                      key={task.id}
+                      className="text-sm text-[#000000] font-[500]"
+                    >
+                      <td className="p-2 w-1/4">{task.title}</td>
+                      <td className="p-2 w-1/4">
+                        {task.dueDate ? task.dueDate : "No Due Date"}
+                      </td>
+                      <td className="p-2 w-1/4">
+                        {task.status ? task.status : ""}
+                      </td>
+                      <td className="p-2 w-1/4">{task.category}</td>
+                      <td className="p-2 relative w-[100px]">
+                        {" "}
+                        <button
+                          className="text-gray-500 hover:text-gray-700 text-2xl font-bold flex items-center justify-center"
+                          onClick={() => handleMenuToggle(task.id)}
+                        >
+                          ...
+                        </button>
+                        {menuTaskId === task.id && (
+                          <div className="absolute right-0 top-full mt-1 w-32 bg-white border border-gray-300 rounded-md shadow-md z-50">
+                            <button
+                              className="block w-full text-left p-2 hover:bg-gray-100"
+                              onClick={() => {
+                                setMenuTaskId(null);
+                              }}
+                            >
+                              Edit
+                            </button>
+                            <button
+                              className="block w-full text-left p-2 text-red-600 hover:bg-gray-100"
+                              onClick={() => {
+                                handleDeleteTask(task.id);
+                                setMenuTaskId(null);
+                              }}
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  ))
               ) : (
                 <tr>
                   <td
