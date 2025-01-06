@@ -10,7 +10,7 @@ interface Task {
   tags?: string[];
   dueDate?: string; // ISO format
   status: "todo" | "in-progress" | "complete";
-  isCompleted:boolean
+  isCompleted: boolean;
 }
 
 // Define the initial state interface
@@ -110,13 +110,9 @@ const taskSlice = createSlice({
 
       saveTasksToLocalStorage(state.tasks);
     },
-    rearrangeTasks(
-      state,
-      action: PayloadAction<{ sourceIndex: number; destinationIndex: number }>
-    ) {
-      const { sourceIndex, destinationIndex } = action.payload;
-      const [movedTask] = state.tasks.splice(sourceIndex, 1);
-      state.tasks.splice(destinationIndex, 0, movedTask);
+
+    rearrangeTasks(state, action: PayloadAction<{ reorderedTasks: Task[] }>) {
+      state.tasks = action.payload.reorderedTasks;
       saveTasksToLocalStorage(state.tasks);
     },
   },
