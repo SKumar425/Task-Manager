@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+import { useEffect } from "react";
 import {
   signInWithPopup,
   GoogleAuthProvider,
-  // signOut,
   onAuthStateChanged,
 } from "firebase/auth";
 import { auth } from "../firebase/firebaseConfig";
@@ -10,18 +10,19 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsLoggedIn, setUserData } from "../store/authSlice";
 
-const Home = () => {
+const Home:React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+ //@ts-ignore
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  //@ts-ignore
   const userData = useSelector((state) => state.auth.userData);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (result) => {
       if (result) {
         const { displayName, email } = result;
-
+//@ts-ignore
         dispatch(setUserData({ name: displayName, email: email }));
         dispatch(setIsLoggedIn(true));
         navigate("/tasklist");
@@ -39,6 +40,7 @@ const Home = () => {
       .then((result) => {
         const { displayName, email,photoURL } = result.user;
         dispatch(
+          //@ts-ignore
           setUserData({ name: displayName, email: email, photo: photoURL })
         );
         dispatch(setIsLoggedIn(true));

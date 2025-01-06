@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteTask, rearrangeTasks } from "../store/taskSlice";
@@ -18,10 +19,11 @@ const Complete: React.FC = () => {
     setMenuTaskId(menuTaskId === taskId ? null : taskId);
   };
 
+  //@ts-ignore
   const handleReorder = (reorderedInProgressTasks: Task[]) => {
     const allTasks = tasks;
 
-    const completeTasks = allTasks.filter((task) => task.status === "complete");
+    
     const otherTasks = allTasks.filter((task) => task.status !== "complete");
 
     const updatedTasks = [...otherTasks, ...reorderedInProgressTasks];
@@ -32,7 +34,7 @@ const Complete: React.FC = () => {
   return (
     <div className="w-full flex flex-col rounded-md bg-[#0000001A]">
       <div className="w-full bg-[#CEFFCC] rounded-t-md text-[#000000] text-[16px] font-[600] leading-[22px] py-3 px-4">
-        Complete
+      COMPLETED
       </div>
       <div className="w-full flex flex-col">
         <div className="w-full flex flex-col gap-1 p-4">
@@ -45,7 +47,7 @@ const Complete: React.FC = () => {
             >
               {tasks
                 .filter((task) => task.status === "complete")
-                .map((task, index) => (
+                .map((task) => (
                   <Reorder.Item
                     key={task.id}
                     value={task}

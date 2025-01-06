@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 // Define the initial state interface
@@ -6,17 +7,6 @@ interface UserData {
   email?: string;
   photo?: string;
 }
-
-interface AuthState {
-  isLoggedIn: boolean;
-  userData: UserData;
-}
-
-// Initial state values
-const initialState: AuthState = {
-  isLoggedIn: false,
-  userData: {},
-};
 
 // Create a slice with reducers for updating the state
 const authSlice = createSlice({

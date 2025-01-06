@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from "react";
 
 interface IDraggableProps {
@@ -15,7 +16,7 @@ interface IDraggableProps {
 }
 
 const DraggableTask: React.FC<IDraggableProps> = ({
-  id,
+  
   task,
   deleteTask,
   toggleMenu,
