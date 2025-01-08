@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
@@ -117,7 +118,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, task }) => {
             <div className="mt-2">
               <p className="font-medium">Uploaded Files:</p>
               <ul className="list-disc pl-5">
-                {editedTask.files.map((file, index) => (
+                {editedTask.files.map((file:any, index:any) => (
                   <li key={index}>{file}</li>
                 ))}
               </ul>
