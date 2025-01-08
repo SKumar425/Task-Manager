@@ -42,7 +42,7 @@ const TodoBoard: React.FC = () => {
 
   return (
     <>
-      <div className="w-1/3 flex flex-col gap-4 rounded-xl bg-[#58575112] p-[12px] h-max">
+      <div className="w-[336px] flex flex-col gap-4 rounded-xl bg-[#58575112] p-[12px] h-max">
         <div className="w-max bg-[#FAC3FF] rounded-md text-[#000000] text-[14px] font-[600] leading-[22px] p-2">
           TODO
         </div>

@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { editTask } from "../store/taskSlice";
 
@@ -14,6 +15,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, task }) => {
   const dispatch = useDispatch();
   //@ts-ignore
   const [editedTask, setEditedTask] = useState<Task | null>(task);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   // Update local state whenever the task prop changes
   useEffect(() => {
@@ -30,10 +32,25 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, task }) => {
     setEditedTask((prev) => (prev ? { ...prev, [name]: value } : prev));
   };
 
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const uploadedFiles = Array.from(e.target.files).map((file) => file.name);
+      //@ts-ignore
+      setEditedTask((prev) =>
+        prev ? { ...prev, files: uploadedFiles } : prev
+      );
+    }
+  };
+
   const handleSave = () => {
     if (editedTask) {
       dispatch(editTask(editedTask));
       onClose();
+
+      // Reset the file input field
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     }
   };
 
@@ -87,6 +104,26 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, task }) => {
               className="w-full border border-gray-300 rounded-md p-2"
             />
           </label>
+          <label>
+            Attach Files:
+            <input
+              type="file"
+              multiple
+              ref={fileInputRef}
+              onChange={handleFileUpload}
+              className="w-full border border-gray-300 rounded-md p-2"
+            />
+          </label>
+          {editedTask.files && (
+            <div className="mt-2">
+              <p className="font-medium">Uploaded Files:</p>
+              <ul className="list-disc pl-5">
+                {editedTask.files.map((file:any, index:any) => (
+                  <li key={index}>{file}</li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
         <div className="flex justify-end gap-2 mt-4">
           <button

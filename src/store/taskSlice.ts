@@ -15,6 +15,8 @@ interface Task {
   status: "todo" | "in-progress" | "complete";
   //@ts-ignore
   isCompleted: boolean;
+  //@ts-ignore
+  files?: { name: string; url: string }[];
 }
 
 // Define the initial state interface
