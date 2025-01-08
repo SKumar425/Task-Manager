@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import  { useState } from "react";
 import { signOut } from "firebase/auth";
@@ -43,8 +44,8 @@ const tasklist:React.FC = () => {
 
   return (
     <>
-      <div className="w-full bg-[#FFF9F9] py-[61px] px-[32px] flex flex-col gap-5">
-        <div className="w-full flex justify-between">
+      <div className="w-full bg-[#FFF9F9] py-[61px] px-5 md:px-[32px] flex flex-col gap-5">
+        <div className="w-full flex flex-col-reverse gap-3 md:flex-row justify-between">
           <div className="flex flex-col gap-2">
             <div className="flex gap-2">
               <svg
@@ -125,7 +126,7 @@ const tasklist:React.FC = () => {
         </div>
 
         {tabIndex == 0 && (
-          <div className="w-full flex flex-col gap-5">
+          <div className=" w-full flex flex-col gap-5">
             <ToDOTask />
             <InProgressTask />
             <CompletedTask />
@@ -133,7 +134,7 @@ const tasklist:React.FC = () => {
         )}
 
         {tabIndex == 1 && (
-          <div className="w-full flex gap-5">
+          <div className="w-full flex flex-wrap gap-5">
             <TodoBoard />
             <InProgressBoard />
             <CompleteBoardfrom />
