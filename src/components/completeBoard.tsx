@@ -6,7 +6,11 @@ import { RootState } from "../store"; // Import RootState type
 import { Reorder } from "framer-motion";
 import Modal from "./modal";
 
-const CompleteBoard: React.FC = () => {
+interface SearchProps {
+  searchTerm: string;
+}
+
+const CompleteBoard: React.FC<SearchProps> = ({ searchTerm }) => {
   const [menuTaskId, setMenuTaskId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   //@ts-ignore
@@ -39,6 +43,21 @@ const CompleteBoard: React.FC = () => {
     setIsModalOpen(true);
     setMenuTaskId(null);
   };
+  const highlightText = (text: string, searchTerm: string) => {
+    if (!searchTerm) return text;
+    
+    const regex = new RegExp(`(${searchTerm})`, "gi");
+    return text.split(regex).map((part, index) =>
+      part.toLowerCase() === searchTerm.toLowerCase() ? (
+        <span key={index} style={{ backgroundColor: "yellow" }}>
+          {part}
+        </span>
+      ) : (
+        part
+      )
+    );
+  };
+
 
   return (
     <>
@@ -63,7 +82,7 @@ const CompleteBoard: React.FC = () => {
                       value={task}
                       className="w-full flex text-base text-[#000000] font-[700] items-center hover:shadow-2xl border border-gray-500 rounded-md bg-[#FFFFFF] p-4"
                     >
-                      <div className="w-full">{task.title}</div>
+                      <div className="w-full">{highlightText(task.title, searchTerm)}</div>
 
                       <div className="relative ">
                         <button

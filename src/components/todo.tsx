@@ -7,7 +7,11 @@ import { nanoid } from "nanoid";
 import { Reorder } from "framer-motion";
 import Modal from "./modal";
 
-const Todo: React.FC = () => {
+interface SearchProps {
+  searchTerm: string;
+}
+
+const Todo: React.FC<SearchProps> = ({ searchTerm }) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const [taskName, setTaskName] = useState("");
@@ -97,6 +101,21 @@ const Todo: React.FC = () => {
     setTaskToEdit(task);
     setIsModalOpen(true);
     setMenuTaskId(null);
+  };
+
+  const highlightText = (text: string, searchTerm: string) => {
+    if (!searchTerm) return text;
+    
+    const regex = new RegExp(`(${searchTerm})`, "gi");
+    return text.split(regex).map((part, index) =>
+      part.toLowerCase() === searchTerm.toLowerCase() ? (
+        <span key={index} style={{ backgroundColor: "yellow" }}>
+          {part}
+        </span>
+      ) : (
+        part
+      )
+    );
   };
 
   return (
@@ -205,7 +224,7 @@ const Todo: React.FC = () => {
                         value={task}
                         className="w-full flex text-sm text-[#000000] font-[500] items-center hover:shadow-2xl border border-transparent hover:border-gray-500 rounded-md"
                       >
-                        <div className="p-2 w-1/4">{task.title}</div>
+                        <div className="p-2 w-1/4">{highlightText(task.title, searchTerm)}</div>
                         <div className="p-2 w-1/4">
                           {task.dueDate ? task.dueDate : "No Due Date"}
                         </div>
@@ -266,7 +285,7 @@ const Todo: React.FC = () => {
                         value={task}
                         className="w-full flex text-sm text-[#000000] font-[500] items-center hover:shadow-2xl border border-transparent hover:border-gray-500 rounded-md"
                       >
-                        <div className="p-2 w-full">{task.title}</div>
+                        <div className="p-2 w-full">{highlightText(task.title, searchTerm)}</div>
 
                         <div className="p-2 relative w-[100px]">
                           <button
