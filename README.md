@@ -1,7 +1,6 @@
 # Task Manager
 
-A simple personal project to manage tasks with features to add, edit, and delete tasks.
-
+A simple task management application that allows users to efficiently organize and track their tasks. Key features include the ability to add, edit, delete, and reorder tasks, as well as attach files to tasks for better organization. The app also integrates Firebase Authentication for secure user login and management. With an intuitive interface and responsive design, the app provides a seamless user experience across devices.
 ---
 
 ## Features
