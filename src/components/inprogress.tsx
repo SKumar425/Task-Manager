@@ -6,7 +6,11 @@ import { RootState } from "../store"; // Import RootState type
 import { Reorder } from "framer-motion"; // Import Reorder from framer-motion
 import Modal from "./modal";
 
-const InProgress: React.FC = () => {
+interface SearchProps {
+  searchTerm: string;
+}
+
+const InProgress: React.FC<SearchProps> = ({ searchTerm }) => {
   const [menuTaskId, setMenuTaskId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   //@ts-ignore
@@ -40,6 +44,22 @@ const InProgress: React.FC = () => {
     setMenuTaskId(null);
   };
 
+  const highlightText = (text: string, searchTerm: string) => {
+    if (!searchTerm) return text;
+    
+    const regex = new RegExp(`(${searchTerm})`, "gi");
+    return text.split(regex).map((part, index) =>
+      part.toLowerCase() === searchTerm.toLowerCase() ? (
+        <span key={index} style={{ backgroundColor: "yellow" }}>
+          {part}
+        </span>
+      ) : (
+        part
+      )
+    );
+  };
+
+
   return (
     <>
       <div className="w-full flex flex-col rounded-md bg-[#0000001A]">
@@ -64,7 +84,7 @@ const InProgress: React.FC = () => {
                       value={task}
                       className="w-full flex text-sm text-[#000000] font-[500] items-center hover:shadow-2xl border border-transparent hover:border-gray-500 rounded-md"
                     >
-                      <div className="p-2 w-1/4">{task.title}</div>
+                      <div className="p-2 w-1/4">{highlightText(task.title, searchTerm)}</div>
                       <div className="p-2 w-1/4">
                         {task.dueDate ? task.dueDate : "No Due Date"}
                       </div>
@@ -126,7 +146,7 @@ const InProgress: React.FC = () => {
                       value={task}
                       className="w-full flex text-sm text-[#000000] font-[500] items-center hover:shadow-2xl border border-transparent hover:border-gray-500 rounded-md"
                     >
-                      <div className="p-2 w-full">{task.title}</div>
+                      <div className="p-2 w-full">{highlightText(task.title, searchTerm)}</div>
 
                       <div className="p-2 relative w-[100px]">
                         <button

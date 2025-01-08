@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import  { useState } from "react";
+import { useState } from "react";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase/firebaseConfig";
 import { useNavigate } from "react-router-dom";
@@ -13,11 +13,11 @@ import TodoBoard from "../components/todoBoard";
 import InProgressBoard from "../components/inprogressBoard";
 import CompleteBoardfrom from "../components/completeBoard";
 
-const tasklist:React.FC = () => {
+const tasklist: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [tabIndex, setTabIndex] = useState(0);
-  
+  const [searchTerm, setSearchTerm] = useState<string>("");
   //@ts-ignore
   const userData = useSelector((state) => state.auth.userData);
 
@@ -125,19 +125,47 @@ const tasklist:React.FC = () => {
           </div>
         </div>
 
+        <div className="w-full flex items-center border-2 border-gray-300 rounded-full">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 18 18"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className="ml-2" // Added left margin to create space between the icon and the input
+          >
+            <g opacity="0.6">
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M3.75 8.25C3.75 5.76825 5.76825 3.75 8.25 3.75C10.7318 3.75 12.75 5.76825 12.75 8.25C12.75 10.7318 10.7318 12.75 8.25 12.75C5.76825 12.75 3.75 10.7318 3.75 8.25ZM15.5303 14.4697L12.984 11.9228C13.7738 10.9073 14.25 9.6345 14.25 8.25C14.25 4.94175 11.5582 2.25 8.25 2.25C4.94175 2.25 2.25 4.94175 2.25 8.25C2.25 11.5582 4.94175 14.25 8.25 14.25C9.6345 14.25 10.9073 13.7738 11.9228 12.984L14.4697 15.5303C14.616 15.6765 14.808 15.75 15 15.75C15.192 15.75 15.384 15.6765 15.5303 15.5303C15.8235 15.237 15.8235 14.763 15.5303 14.4697Z"
+                fill="black"
+              />
+            </g>
+          </svg>
+
+          <input
+            type="text"
+            className="w-full p-2 rounded-full bg-transparent" // Adjust padding to make space for the icon
+            placeholder="Search by task name..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+
         {tabIndex == 0 && (
           <div className=" w-full flex flex-col gap-5">
-            <ToDOTask />
-            <InProgressTask />
-            <CompletedTask />
+            <ToDOTask searchTerm={searchTerm} />
+            <InProgressTask searchTerm={searchTerm} />
+            <CompletedTask searchTerm={searchTerm} />
           </div>
         )}
 
         {tabIndex == 1 && (
           <div className="w-full flex flex-wrap gap-5">
-            <TodoBoard />
-            <InProgressBoard />
-            <CompleteBoardfrom />
+            <TodoBoard searchTerm={searchTerm} />
+            <InProgressBoard searchTerm={searchTerm} />
+            <CompleteBoardfrom searchTerm={searchTerm} />
           </div>
         )}
       </div>
