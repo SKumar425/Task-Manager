@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addTask, deleteTask, rearrangeTasks } from "../store/taskSlice";
 import { RootState } from "../store"; // Import RootState type
@@ -8,6 +8,8 @@ import { Reorder } from "framer-motion";
 import Modal from "./modal";
 
 const Todo: React.FC = () => {
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
   const [taskName, setTaskName] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [status, setStatus] = useState("default");
@@ -16,8 +18,15 @@ const Todo: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   //@ts-ignore
   const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
+  const [taskFiles, setTaskFiles] = useState<File[]>([]);
   const dispatch = useDispatch();
-  const tasks = useSelector((state: RootState) => state.tasks.tasks); // Type the state using RootState
+  const tasks = useSelector((state: RootState) => state.tasks.tasks);
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      setTaskFiles(Array.from(event.target.files));
+    }
+  };
 
   const handleAddTask = () => {
     if (!taskName || status === "default" || category === "default") {
@@ -31,6 +40,10 @@ const Todo: React.FC = () => {
       dueDate,
       category,
       status,
+      files: taskFiles.map((file) => ({
+        name: file.name,
+        url: URL.createObjectURL(file),
+      })),
     };
 
     //@ts-ignore
@@ -41,6 +54,11 @@ const Todo: React.FC = () => {
     setDueDate("");
     setStatus("default");
     setCategory("default");
+    setTaskFiles([]);
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
 
   const handleCancel = () => {
@@ -48,6 +66,11 @@ const Todo: React.FC = () => {
     setDueDate("");
     setStatus("default");
     setCategory("default");
+    setTaskFiles([]);
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
 
   const handleDeleteTask = (taskId: string) => {
@@ -101,6 +124,17 @@ const Todo: React.FC = () => {
                 type="date"
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
+                className="p-2 border border-gray-300 rounded-md"
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <label className="font-medium">Attach Files:</label>
+
+              <input
+                type="file"
+                multiple
+                ref={fileInputRef} // Attach the ref here
+                onChange={handleFileUpload}
                 className="p-2 border border-gray-300 rounded-md"
               />
             </div>
